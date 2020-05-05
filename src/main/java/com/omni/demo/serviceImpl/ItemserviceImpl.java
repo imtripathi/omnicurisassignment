@@ -46,7 +46,8 @@ public class ItemserviceImpl  implements ItemService{
 	public ResponseMessage deleteItem(Long id) {
 		itemRepository.deleteById(id);
 		ResponseMessage res= new ResponseMessage();
-		res.setMessage("anans");
+		res.setMessage("Item has been deleted Successfully");
+		res.setSatus("Success");
 		return res;
 	}
 

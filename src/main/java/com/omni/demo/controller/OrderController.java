@@ -30,7 +30,7 @@ public class OrderController {
 	@Autowired
 	private OrderService orderService;
 	
-	@ApiOperation(value = "creates multiple or single orders ", response = Item.class)
+	@ApiOperation(value = "creates multiple or single orders ", response = ResponseMessage.class)
 	@ApiResponses(value = { 
 	            @ApiResponse(code = 200, message = "Success|OK"),
 	            @ApiResponse(code = 404, message = "not found!!!") })
@@ -42,7 +42,7 @@ public class OrderController {
 	}
 	
 	
-	@ApiOperation(value = "Gets All the order details", response = Item.class)
+	@ApiOperation(value = "Gets All the order details", response = OrderDetails.class)
 	@ApiResponses(value = { 
 	            @ApiResponse(code = 200, message = "Success|OK"),
 	            @ApiResponse(code = 404, message = "not found!!!") })
