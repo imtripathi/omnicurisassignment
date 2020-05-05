@@ -8,6 +8,8 @@
 6)	Open the swagger Url in your browser- http://localhost:8080/assignment/swagger-ui.htm
 7)	Once the swagger is open we can see all the api’s listing .
 8)	We can Hit all the api’s from swagger and check.
+
+
 Software and tools Used
 1)Mysql
 2)Java 1.8
@@ -15,8 +17,13 @@ Software and tools Used
 4)JPA for database interaction.
 5)swagger implementation is done for listing the api’s and hitting the api easily from browser itself.
 
+
+
+
 APIs and its Description
+
 1)Order
+
 a) PUT /orders/createorder
 This is use to create the new order either single or multiple.
 Request-
