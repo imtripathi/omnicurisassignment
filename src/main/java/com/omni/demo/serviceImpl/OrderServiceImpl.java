@@ -1,7 +1,9 @@
 package com.omni.demo.serviceImpl;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.transaction.Transactional;
 
@@ -27,33 +29,51 @@ private OrderRepository orderRepo;
 	@Override
 	public ResponseMessage createOrder(List<OrderRequest> orderRequest) throws Exception {
 		ResponseMessage res= new ResponseMessage();
-		try {
+		if(orderRequest == null || orderRequest.isEmpty()) {
+			throw new OrderException("At least one order item is required");
+		}
+
+		Map<Long, Item> itemsById = new LinkedHashMap<>();
+		Map<Long, Integer> requestedQuantityByItemId = new LinkedHashMap<>();
+
 		for(OrderRequest orderReq:orderRequest) {
-			Item item=new Item();
-			item=itemRepo.findById(orderReq.getItemId()).get();
-			if(item.getStock()<orderReq.getQuantity()) {
+			if(orderReq.getItemId() == null) {
+				throw new OrderException("Item id is required to place an order");
+			}
+			if(orderReq.getQuantity() <= 0) {
+				throw new OrderException("Order quantity should be greater than zero");
+			}
+			Item item = itemsById.get(orderReq.getItemId());
+			if(item == null) {
+				item = itemRepo.findById(orderReq.getItemId())
+						.orElseThrow(() -> new OrderException("Item not found for id " + orderReq.getItemId()));
+				itemsById.put(orderReq.getItemId(), item);
+			}
+			int requestedQuantity = requestedQuantityByItemId.getOrDefault(orderReq.getItemId(), 0) + orderReq.getQuantity();
+			requestedQuantityByItemId.put(orderReq.getItemId(), requestedQuantity);
+			if(item.getStock() < requestedQuantity) {
 				throw new OrderException("Sufficient Stock not available for the Item order is being placed .please change the order");
 			}
+		}
+
+		for(OrderRequest orderReq:orderRequest) {
+			Item item=itemsById.get(orderReq.getItemId());
 			int availableStock=item.getStock()-orderReq.getQuantity();
 			item.setStock(availableStock);
-			itemRepo.save(item);
 			OrderDetails order =new OrderDetails();
 			order.setEmailid(orderReq.getEmailId());
 			order.setItemid(orderReq.getItemId());
 			order.setQuantity(orderReq.getQuantity());
 			order.setTotalamount(orderReq.getQuantity()*item.getPrice());
 			orderRepo.save(order);
-			
-			
-			
-			
 		}
+
+		for(Item item:itemsById.values()) {
+			itemRepo.save(item);
+		}
+
 		res.setSatus("Success");
 		res.setMessage("Order has been placed Successfully");
-		}
-		catch(Exception e) {
-			throw e;
-		}
 		return res;
 	}
 	@Override
