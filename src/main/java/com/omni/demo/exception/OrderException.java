@@ -1,7 +1,9 @@
 package com.omni.demo.exception;
 
-public class OrderException extends Exception {
-public OrderException(String s) {
-	super (s);
-}
+public class OrderException extends RuntimeException {
+	private static final long serialVersionUID = 1L;
+
+	public OrderException(String s) {
+		super(s);
+	}
 }
